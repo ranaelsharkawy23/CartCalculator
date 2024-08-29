@@ -16,12 +16,8 @@ class ProductController extends Controller
         ]);
         return $product->load('products');
     }
-    public function index_Cart(Product $product){
-        return $product->cart;
-    }
-    public function index(){
-        return ProductResource::collection(Product::with(['cart'])->get());
-    }
+   
+   
     public function store(ProductRequest $request){
         $validated=$request->validated();
         $product=Product::create($validated);
