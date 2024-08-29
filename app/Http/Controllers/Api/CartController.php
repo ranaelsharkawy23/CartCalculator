@@ -37,7 +37,8 @@ class CartController extends Controller
 
         return response()->json([
             'message' => 'Products added to cart',
-            'cart' => $cart->products,
+            'items' => $cart->products,
+            'calculation' => $this->getCartDetails($cart->id)
         ]);
     }
 
@@ -68,13 +69,13 @@ class CartController extends Controller
         $total = $subtotal + $totalShipping  + $vat -$discounts['totalDiscount'] ;
         
         // Return the detailed cart information
-        return response()->json([
+        return [
             'subtotal' => $subtotal,
             'shipping' => $totalShipping,
             'vat' => $vat,
             'discounts' => $discounts['details'] ,
             'total' => $total,
-        ]);
+        ];
     }
     
     
@@ -115,8 +116,7 @@ class CartController extends Controller
     
         foreach ($discounts as $discount) {
             // Check if the discount condition is met
-           
-            if ($this->checkCondition($discount->condition, $cart)) {
+            if ($this->checkCondition($discount, $cart)) {
                $total= $cart->products->sum(function ($product) {
                      return $product->Itemprice * $product->pivot->quantity;
                     
@@ -186,74 +186,24 @@ class CartController extends Controller
 
    
     
-   private function checkCondition($condition, $cart)
+   private function checkCondition($discount, $cart)
    {
-    // Define a mapping of generic product types to specific types
-    $typeMapping = [
-        'tops' => ['t-shirt', 'blouse', 'jacket'],
-      
-    ];
+    $matchedCondition = $cart->products->filter(function ( $item) use($discount){
+        return strtolower($item->category?->name) == strtolower($discount->condition);
+    })->values();
 
-    // Normalize and parse the condition
-    $condition = strtolower(trim($condition));
-    $parsedCondition = $this->parseCondition($condition);
-
-    // Loop through each product in the cart
-    foreach ($cart->products as $product) {
-        $productType = strtolower($product->type);
-        $productQuantity = $product->pivot->quantity;
-
-        // Check if the product type matches any condition
-        foreach ($parsedCondition as $rule) {
-            if (isset($rule['product_type'])) {
-                if ($rule['product_type'] === 'tops') {
-                    // Check if the product type matches the "tops" mapping
-                    if (in_array($productType, $typeMapping['tops'])) {
-                        if ($productQuantity < $rule['quantity']) {
-                            return false; // Condition not met
-                        }
-                    }
-                } else {
-                    // Check if the product type directly matches the rule
-                    if ($rule['product_type'] === $productType) {
-                        if ($productQuantity < $rule['quantity']) {
-                            return false; // Condition not met
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    // If all conditions are satisfied, return true
-    return true;
-    }
-    
-    private function parseCondition($condition)
+    if($matchedCondition && $matchedCondition->count()*$matchedCondition->sum('pivot.quantity') >= $discount->min_items)
     {
-        $parsed = [];
-        // Split conditions by commas
-        $conditions = explode(',', $condition);
-    
-        foreach ($conditions as $cond) {
-            $cond = trim($cond); // Remove extra spaces
-    
-            // Extract quantity and product type
-            if (preg_match('/(\d+)\s+([a-z\s\-]+)/', $cond, $matches)) {
-                $quantity = (int)$matches[1];
-                $productType = strtolower(trim($matches[2]));
-    
-                // Store parsed condition
-                $parsed[] = [
-                    'quantity' => $quantity,
-                    'product_type' => $productType
-                ];
-            }
-        }
-    
-        return $parsed;
+        return true;
+    }elseif($discount->condition == 'shipping' && $cart->products->count()*$cart->products->sum('pivot.quantity') > $discount->min_items){
+        return true;
     }
-    
+
+    return false;
+
+
+}
+   
 
 
 

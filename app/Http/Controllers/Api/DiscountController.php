@@ -8,6 +8,11 @@ use Illuminate\Http\Request;
 
 class DiscountController extends Controller
 {
+
+    public function index()
+    {
+        return Discount::all();
+    }
     public function store(Request $request)
     {
         $request->validate([
@@ -32,6 +37,12 @@ class DiscountController extends Controller
     
         // Return a successful response
         return response()->json(['message' => 'Discount deleted successfully.'], 200);
+    }
+
+    public function update(Request $request, Discount $discount)
+    {
+        $discount->update($request->all());
+        return $discount;
     }
 
 

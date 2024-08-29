@@ -27,8 +27,13 @@ class ProductController extends Controller
         $product=Product::create($validated);
         return $product;
     }
-    public function show(Product $product){
-        return new ProductResource($product);
+    public function indexshow()
+    {
+        // Retrieve all products from the database
+        $products = Product::with('category')->get();
+
+        // Return the products as a JSON response
+        return response()->json($products);
     }
     public function destroy(Product $product){
         $product->delete();
