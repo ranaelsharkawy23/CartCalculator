@@ -1,5 +1,3 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
-
 <p align="center">
 <a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
@@ -7,60 +5,102 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
-## About Laravel
+## Cart Calculator
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+### Overview
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Develop a versatile program that prices a cart of products, considering various factors such as country-specific shipping fees, product offers, and applicable discounts. The program should be able to handle multiple products, apply different offers dynamically, and generate a comprehensive invoice in USD.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### Technology Stack
 
-## Learning Laravel
+-   **Language**: PHP
+-   **Programming Paradigm**: Object-Oriented Programming (OOP)
+-   **Design Principles**: SOLID
+-   **Design Patterns**: Pre-defined design patterns as applicable
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
 
-## Laravel Sponsors
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
 
-### Premium Partners
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+### Product Catalog 
+The catalog includes products with the following details:
+ | Item Type | Item Price (USD) | Shipped From | Weight (kg) | 
+ |------------|-------------------|--------------|-------------|
+  | T-shirt | $30.99 | US | 0.2 |
+   | Blouse | $10.99 | UK | 0.3 | 
+  | Pants | $64.99 | UK | 0.9 | 
+  | Sweatpants | $84.99 | CN | 1.1 | 
+  | Jacket | $199.99 | US | 2.2 |
+   | Shoes | $79.99 | CN | 1.3 |
 
-## Contributing
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Offers and Discounts
 
-## Code of Conduct
+The program supports dynamic application of discounts and offers, including:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+-   **User-Defined Discounts**: Allows users to apply custom percentage-based or fixed amount discounts to individual items or the entire cart.
+-   **Offers**: Users can specify promotional offers, such as discounts on specific products or combinations of products.
 
-## Security Vulnerabilities
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### Shipping Rates
 
-## License
+Shipping fees are calculated based on the weight of each item and the shipping country. Rates are defined as:
+#### Shipping Rates The shipping rates are as follows: 
+| Country | Rate (USD per 100 grams) | 
+|---------|---------------------------|
+ | US | $2 |
+  | UK | $3 |
+   | CN | $2 |
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+### VAT
+
+A 14% VAT is applied to the subtotal (sum of item prices) before any user-defined discounts or offers are applied.
+
+### Invoice Output
+
+The program generates a detailed invoice including:
+
+1.  **Subtotal**: Total of all item prices.
+2.  **Shipping Fees**: Calculated based on weight and shipping country rates.
+3.  **VAT**: 14% VAT applied to the subtotal before discounts.
+4.  **Discounts**: Detailed breakdown of any user-defined discounts and offers applied.
+5. **Total**: Final amount after applying all discounts, VAT, and shipping fees
+### Flexibility and Adjustments
+
+The system is designed to:
+
+-   Allow users to define and apply various discounts and offers dynamically.
+-   Adjust calculations based on changes in item prices, weights, shipping rates, or VAT rates.
+-   Accommodate different scenarios and promotions as specified by users.
+
+This approach ensures a robust, scalable, and maintainable system that meets diverse and evolving requirements.
+
+**e.g.**
+
+Adding the following products:
+
+```
+T-shirt
+Blouse
+Pants
+Shoes
+Jacket
+
+```
+
+Outputs the following invoice:
+
+```
+Subtotal: $386.95
+Shipping: $110
+VAT: $54.173
+Discounts:
+	10% off shoes: -$7.999
+	50% off jacket: -$99.995
+	$10 of shipping: -$10
+Total: $433.129
+```
+
